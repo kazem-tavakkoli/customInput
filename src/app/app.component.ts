@@ -1,33 +1,36 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {DateLessThan, MustMatch } from './validation/data.validation';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-   
-  myForm!:FormGroup;
+  myForm!: FormGroup;
   dynamicFormFields!: any[];
-  test:string = '';
-  constructor(private fb:FormBuilder) {   
+  get f() {
+    return this.myForm.controls;
   }
+  constructor(private fb: FormBuilder) {}
   ngOnInit(): void {
-    this.myForm = this.fb.group({
-      inputOne: ['',[Validators.required]],
-      inputTwo: ['',[Validators.required]],
-      inputThree: ['',[Validators.required]],
-      inputFour: ['',[Validators.required]]
-    })
-
-    setTimeout(() => {
-      this.myForm.get('inputOne')?.disable();
-    }, 7000);
-
-    setTimeout(() => {
-      this.myForm.get('inputOne')?.enable();
-    }, 14000);
+    this.myForm = this.fb.group(
+      {
+        inputOne: [''],
+        inputTwo: ['', [Validators.required]],
+        password: ['', [Validators.required]],
+        confirmPassword: ['', [Validators.required]],
+      },
+      { validators:[ MustMatch('password', 'confirmPassword'),DateLessThan('inputOne', 'inputTwo')]}
+    );
   }
- 
+
+submit(){
+  this.myForm.markAllAsTouched();
+  console.log(this.myForm);
+  
 }
+}
+
+
